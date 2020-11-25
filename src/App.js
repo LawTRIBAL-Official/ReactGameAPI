@@ -1,61 +1,43 @@
 import React, { Component } from 'react';
 import './App.css';
+import Search from './components/Search';
+import GamesList from './components/GamesList';
+
 
 class App extends React.Component {
 
     constructor(props) {
-
-        super(props);
-
+        super(props)
         this.state = {
-            items: [],
-            isLoaded: false
+            filterText: ''
         }
-
     }
 
-    componentDidMount() {
-
-        fetch('https://localhost:44336/api/Gaming')
-            .then(res => res.json())
-            .then(json => {
-                this.setState({
-                    items: json,
-                    isLoaded: true,
-                })
-            }).catch((err) => {
-                console.log(err);
-            });
-
+    filterUpdate(value) {
+        this.setState({
+            filterText: value
+        })
     }
 
     render() {
 
-        const { isLoaded, items } = this.state;
-
-        if (!isLoaded)
-            return <div>Loading...</div>;
+        // DEBUGGING console.log('filterText state from parent component', this.state.filterText)
 
         return (
             <div className="App">
                 <div className="wrapper">
-                    <h2><strong>Games<span>( 4 )</span></strong></h2>
-                    <div className="cards">
-
-                        {/* Main cards */}
-                        {items.map(item => (
-                            <figure className="card" key={item.game_id}>
-                                <img src="https://mrreiha.keybase.pub/codepen/hover-fx/1.jpg" />
-                                <figcaption>{item.game_name}</figcaption>
-                            </figure>
-                        ))}
-                    </div>
+                    <Search
+                        filterText={this.state.filterText}
+                        filterUpdate={this.filterUpdate.bind(this)}
+                    />
+                        <GamesList
+                            data={this.props.data}
+                            filterText={this.state.filterText}
+                        />
                 </div>
             </div>
-        );
-
+        )
     }
-
 }
 
 export default App;
